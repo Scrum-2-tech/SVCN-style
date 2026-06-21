@@ -143,3 +143,12 @@ MESSAGE_TAGS = {
     messages_constants.WARNING: 'warning',
     messages_constants.ERROR: 'danger',
 }
+
+ALLOWED_HOSTS = [
+    'web-production-753dd.up.railway.app',
+    '.railway.app',
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://web-production-753dd.up.railway.app',
+]
