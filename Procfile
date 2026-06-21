@@ -1,0 +1,1 @@
+web: gunicorn svcn_style.wsgi
