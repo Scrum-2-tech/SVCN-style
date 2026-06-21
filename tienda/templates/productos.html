@@ -105,10 +105,15 @@
         {% for p in productos %}
             <div class="col">
                 <div class="card h-100 border-0 shadow-sm p-3" style="background-color: var(--svcn-almond); border-radius: 15px;">
-                    {% if p.imagen %}
-                        <img src="{% static 'img/productos/'|add:p.imagen %}" 
-                            class="card-img-top rounded" 
-                            alt="{{ p.nombre }}" 
+                    %}{% if p.imagen %}
+                        <img src="{{ p.imagen.url }}"
+                            class="card-img-top rounded"
+                            alt="{{ p.nombre }}"
+                            style="height: 350px; object-fit: cover;">
+                    {% else %}
+                        <img src="{% static 'img/producto-default.jpg' %}"
+                            class="card-img-top rounded"
+                            alt="Producto sin imagen"
                             style="height: 350px; object-fit: cover;">
                     {% endif %}
                     <div class="card-body text-center d-flex flex-column">
