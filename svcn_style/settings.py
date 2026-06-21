@@ -151,3 +151,4 @@ MESSAGE_TAGS = {
     messages_constants.ERROR: 'danger',
 }
 
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
