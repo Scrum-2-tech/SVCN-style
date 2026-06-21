@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-5" style="font-family: 'Oswald'; color: var(--svcn-espresso); letter-spacing: 2px;">
+        NUESTRA COLECCIÓN
+    </h2>
+    
+    <!-- Contenedor del Buscador Multicriterio -->
+    <div class="card border-0 shadow-sm p-4 mb-5" style="border-radius: 15px; background-color: var(--svcn-vanilla); border: 1px solid rgba(76, 43, 8, 0.1);">
+        <form method="GET" action="{% url 'productos' %}" class="row g-3">
+            <!-- Búsqueda por texto -->
+            <div class="col-md-3">
+                <label for="id_q" class="form-label fw-bold small text-uppercase mb-1" style="color: var(--svcn-espresso); font-family: 'Oswald';">Buscar Prenda</label>
+                <input type="text" name="q" id="id_q" class="form-control" placeholder="Ej: Hoodie, Camiseta..." value="{{ q }}" style="border-radius: 8px; border: 1px solid var(--svcn-caramel);">
+            </div>
+
+            <!-- Categoría -->
+            <div class="col-md-2">
+                <label for="id_categoria" class="form-label fw-bold small text-uppercase mb-1" style="color: var(--svcn-espresso); font-family: 'Oswald';">Categoría</label>
+                <select name="categoria" id="id_categoria" class="form-select" style="border-radius: 8px; border: 1px solid var(--svcn-caramel);">
+                    <option value="">Todas</option>
+                    {% for cat in categorias %}
+                        <option value="{{ cat.id }}" {% if categoria_actual == cat.id %}selected{% endif %}>{{ cat.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Marca -->
+            <div class="col-md-2">
+                <label for="id_marca" class="form-label fw-bold small text-uppercase mb-1" style="color: var(--svcn-espresso); font-family: 'Oswald';">Marca</label>
+                <select name="marca" id="id_marca" class="form-select" style="border-radius: 8px; border: 1px solid var(--svcn-caramel);">
+                    <option value="">Todas</option>
+                    {% for m in marcas %}
+                        <option value="{{ m.id }}" {% if marca_actual == m.id %}selected{% endif %}>{{ m.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Talla -->
+            <div class="col-md-2">
+                <label for="id_talla" class="form-label fw-bold small text-uppercase mb-1" style="color: var(--svcn-espresso); font-family: 'Oswald';">Talla</label>
+                <select name="talla" id="id_talla" class="form-select" style="border-radius: 8px; border: 1px solid var(--svcn-caramel);">
+                    <option value="">Todas</option>
+                    {% for t in tallas %}
+                        <option value="{{ t.id }}" {% if talla_actual == t.id %}selected{% endif %}>{{ t.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Color -->
+            <div class="col-md-3">
+                <label for="id_color" class="form-label fw-bold small text-uppercase mb-1" style="color: var(--svcn-espresso); font-family: 'Oswald';">Color</label>
+                <select name="color" id="id_color" class="form-select" style="border-radius: 8px; border: 1px solid var(--svcn-caramel);">
+                    <option value="">Todos</option>
+                    {% for c in colores %}
+                        <option value="{{ c.id }}" {% if color_actual == c.id %}selected{% endif %}>{{ c.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <!-- Rango de Precios -->
+            <div class="col-md-3">
+                <label class="form-label fw-bold small text-uppercase mb-1" style="color: var(--svcn-espresso); font-family: 'Oswald';">Precio Mínimo</label>
+                <input type="number" name="precio_min" class="form-control" placeholder="Mínimo" value="{{ precio_min }}" style="border-radius: 8px; border: 1px solid var(--svcn-caramel);">
+            </div>
+            <div class="col-md-3">
+                <label class="form-label fw-bold small text-uppercase mb-1" style="color: var(--svcn-espresso); font-family: 'Oswald';">Precio Máximo</label>
+                <input type="number" name="precio_max" class="form-control" placeholder="Máximo" value="{{ precio_max }}" style="border-radius: 8px; border: 1px solid var(--svcn-caramel);">
+            </div>
+
+            <!-- Ordenar por -->
+            <div class="col-md-3">
+                <label for="id_orden" class="form-label fw-bold small text-uppercase mb-1" style="color: var(--svcn-espresso); font-family: 'Oswald';">Ordenar por</label>
+                <select name="orden" id="id_orden" class="form-select" style="border-radius: 8px; border: 1px solid var(--svcn-caramel);">
+                    <option value="" {% if not orden_actual %}selected{% endif %}>Nombre (A-Z)</option>
+                    <option value="precio_asc" {% if orden_actual == 'precio_asc' %}selected{% endif %}>Menor Precio</option>
+                    <option value="precio_desc" {% if orden_actual == 'precio_desc' %}selected{% endif %}>Mayor Precio</option>
+                    <option value="reciente" {% if orden_actual == 'reciente' %}selected{% endif %}>Más Recientes</option>
+                </select>
+            </div>
+
+            <!-- Acciones -->
+            <div class="col-md-3 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-dark flex-grow-1" style="border-radius: 8px; font-weight: 600; height: 38px;">FILTRAR</button>
+                <a href="{% url 'productos' %}" class="btn btn-outline-secondary" style="border-radius: 8px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border-color: var(--svcn-caramel); color: var(--svcn-caramel);" title="Limpiar Filtros">Limpiar</a>
+            </div>
+        </form>
+        <hr style="border-color: rgba(76, 43, 8, 0.15);">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span class="small text-muted">Mostrando {{ productos|length }} productos encontrados</span>
+            <div class="d-flex gap-2">
+                <a href="{% url 'catalogo_pdf' %}{% if categoria_actual %}{{ categoria_actual }}/{% endif %}" class="btn btn-sm btn-outline-danger" style="border-radius: 6px; font-weight: 600;">
+                    📄 Exportar PDF
+                </a>
+                <a href="{% url 'catalogo_csv' %}?q={{ q }}&categoria={{ categoria_actual|default:'' }}&marca={{ marca_actual|default:'' }}&color={{ color_actual|default:'' }}&talla={{ talla_actual|default:'' }}&precio_min={{ precio_min }}&precio_max={{ precio_max }}" 
+                   class="btn btn-sm btn-outline-success" style="border-radius: 6px; font-weight: 600;">
+                    📊 Exportar CSV
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="row row-cols-1 row-cols-md-3 g-4">
+        {% for p in productos %}
+            <div class="col">
+                <div class="card h-100 border-0 shadow-sm p-3" style="background-color: var(--svcn-almond); border-radius: 15px;">
+                    {% if p.imagen %}
+                        <img src="{{ p.imagen.url }}" class="card-img-top rounded" alt="{{ p.nombre }}" style="height: 350px; object-fit: cover;">
+                    {% endif %}
+                    <div class="card-body text-center d-flex flex-column">
+                        <h5 class="card-title" style="font-weight: 700; color: var(--svcn-espresso);">{{ p.nombre }}</h5>
+                        <p class="text-muted small">{{ p.talla }} - {{ p.color }}</p>
+                        <p class="h4 mb-3" style="color: var(--svcn-caramel); font-weight: 800;">${{ p.precio|intcomma }}</p>
+                        
+                        <form action="{% url 'add' p.id %}" method="GET" class="mt-auto">
+                            <div class="d-flex align-items-center justify-content-center mb-3">
+                                <label for="cant_{{ p.id }}" class="me-2 mb-0" style="font-weight: 600; font-size: 0.85rem;">CANT:</label>
+                                <input type="number" 
+                                       id="cant_{{ p.id }}" 
+                                       name="cantidad" 
+                                       value="1" 
+                                       min="1" 
+                                       max="{{ p.stock }}" 
+                                       class="form-control form-control-sm text-center" 
+                                       style="width: 70px; border: 1px solid var(--svcn-caramel); border-radius: 5px;">
+                            </div>
+                            
+                            {% if p.stock > 0 %}
+                                <button type="submit" class="btn w-100" 
+                                        style="background-color: var(--svcn-caramel); color: white; font-weight: 700; border-radius: 8px;">
+                                    AÑADIR AL CARRITO
+                                </button>
+                            {% else %}
+                                <button class="btn w-100 btn-secondary disabled" style="border-radius: 8px;">
+                                    AGOTADO
+                                </button>
+                            {% endif %}
+                        </form>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <div class="col-12 text-center my-5">
+                <p class="h5 text-muted">No hay productos en esta categoría por el momento.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

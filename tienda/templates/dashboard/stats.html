@@ -1,0 +1,191 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-2">
+        <div>
+            <h2 style="font-family: 'Oswald'; color: var(--svcn-espresso); margin-bottom: 0;">PANEL DE CONTROL - SVCN STYLE</h2>
+            <span class="badge bg-dark p-2">Perfil: Administrador</span>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'gestion_usuarios' %}" class="btn btn-dark" style="border-radius: 10px; font-weight: 600;">👥 Gestión de Roles</a>
+            <a href="{% url 'mantenimiento' %}" class="btn btn-outline-dark" style="border-radius: 10px; font-weight: 600;">📦 Mantenimiento</a>
+        </div>
+    </div>
+    
+    <!-- Tarjetas de Métricas Rápidas -->
+    <div class="row g-4 mb-5">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 h-100" style="background-color: #d1e7dd; border-radius: 15px; border-left: 5px solid #198754 !important;">
+                <h6 class="text-muted small fw-bold">VENTAS TOTALES</h6>
+                <h3 class="fw-bold text-success" style="font-family: 'Oswald';">${{ total_dinero|floatformat:0|intcomma }}</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 h-100" style="background-color: #cfe2ff; border-radius: 15px; border-left: 5px solid #0d6efd !important;">
+                <h6 class="text-muted small fw-bold">ÓRDENES PROCESADAS</h6>
+                <h3 class="fw-bold text-primary" style="font-family: 'Oswald';">{{ cantidad_pedidos }}</h3>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm p-4 h-100" style="background-color: #f8d7da; border-radius: 15px; border-left: 5px solid #dc3545 !important;">
+                <h6 class="text-muted small fw-bold">CLIENTES ACTIVOS</h6>
+                <h3 class="fw-bold text-danger" style="font-family: 'Oswald';">{{ total_clientes }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sección de Gráficos (Chart.js) -->
+    <div class="row g-4 mb-5">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm p-4" style="border-radius: 15px;">
+                <h5 class="mb-3 fw-bold" style="font-family: 'Oswald'; color: var(--svcn-espresso);">📈 Tendencia Mensual de Ventas</h5>
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="ventasMensualesChart"></canvas>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm p-4" style="border-radius: 15px;">
+                <h5 class="mb-3 fw-bold" style="font-family: 'Oswald'; color: var(--svcn-espresso);">🍰 Ventas por Categoría</h5>
+                <div style="position: relative; height: 300px; width: 100%;">
+                    <canvas id="ventasCategoriasChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Top 5 Más Vendidos -->
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 15px;">
+                <h5 class="mb-3 fw-bold" style="font-family: 'Oswald'; color: var(--svcn-espresso);">🔥 Top 5 Más Vendidos</h5>
+                <ul class="list-group list-group-flush">
+                    {% for item in top_ventas %}
+                    <li class="list-group-item d-flex justify-content-between align-items-center bg-transparent py-3">
+                        <span class="fw-bold text-dark">{{ item.producto__nombre }}</span>
+                        <span class="badge rounded-pill bg-dark p-2">{{ item.total_vendido }} und.</span>
+                    </li>
+                    {% empty %}
+                    <li class="list-group-item bg-transparent text-muted small">No hay suficientes registros de ventas aún.</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <!-- Alertas de Inventario -->
+        <div class="col-md-6 mb-4">
+            <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 15px; background-color: #fff3cd; border-left: 5px solid #ffc107 !important;">
+                <h5 class="mb-3 fw-bold" style="color: #856404; font-family: 'Oswald';">⚠️ Alertas Críticas de Inventario</h5>
+                {% if productos_criticos %}
+                    <div class="table-responsive">
+                        <table class="table table-sm table-borderless align-middle">
+                            <thead>
+                                <tr class="small text-muted border-bottom" style="border-color: rgba(133,100,4,0.2) !important;">
+                                    <th>Producto</th>
+                                    <th>Talla</th>
+                                    <th>Color</th>
+                                    <th class="text-end">Stock</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for p in productos_criticos %}
+                                <tr>
+                                    <td class="fw-bold">{{ p.nombre }}</td>
+                                    <td><span class="badge bg-dark">{{ p.talla.nombre }}</span></td>
+                                    <td><span class="badge bg-light text-dark border">{{ p.color.nombre }}</span></td>
+                                    <td class="fw-bold text-danger text-end">{{ p.stock }} und.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-success small fw-bold">¡Excelente! Todas las prendas cuentan con stock suficiente.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Cargar Chart.js CDN -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const mesLabels = {{ mes_labels_json|safe }};
+        const mesData = {{ mes_data_json|safe }};
+        const catLabels = {{ cat_labels_json|safe }};
+        const catData = {{ cat_data_json|safe }};
+
+        // 1. Gráfico de Ventas Mensuales
+        const ctxMensuales = document.getElementById('ventasMensualesChart').getContext('2d');
+        new Chart(ctxMensuales, {
+            type: 'bar',
+            data: {
+                labels: mesLabels,
+                datasets: [{
+                    label: 'Ingresos ($ COP)',
+                    data: mesData,
+                    backgroundColor: 'rgba(197, 155, 109, 0.65)',
+                    borderColor: 'rgba(197, 155, 109, 1)',
+                    borderWidth: 2,
+                    borderRadius: 5,
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value.toLocaleString();
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // 2. Gráfico de Ventas por Categoría
+        const ctxCategorias = document.getElementById('ventasCategoriasChart').getContext('2d');
+        new Chart(ctxCategorias, {
+            type: 'doughnut',
+            data: {
+                labels: catLabels,
+                datasets: [{
+                    data: catData,
+                    backgroundColor: [
+                        '#1F1105',
+                        '#C59B6D',
+                        '#B7957F',
+                        '#D7BDA6',
+                        '#6D3914',
+                        '#2B2D2F'
+                    ],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'right',
+                        labels: {
+                            boxWidth: 15,
+                            font: { size: 11 }
+                        }
+                    }
+                }
+            }
+        });
+    });
+</script>
+{% endblock %}

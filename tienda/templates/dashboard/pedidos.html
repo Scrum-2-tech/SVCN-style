@@ -1,0 +1,128 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 style="font-family: 'Oswald'; color: var(--svcn-espresso);">LOGÍSTICA DE ENVÍOS</h2>
+    </div>
+
+    <!-- Buscador Multicriterio de Pedidos -->
+    <div class="card border-0 shadow-sm p-4 mb-4" style="border-radius: 15px; background-color: var(--svcn-vanilla); border: 1px solid rgba(76, 43, 8, 0.1);">
+        <form method="GET" action="{% url 'gestion_pedidos' %}" class="row g-3">
+            <div class="col-md-3">
+                <label for="cliente_q" class="form-label fw-bold small text-uppercase mb-1" style="color: var(--svcn-espresso); font-family: 'Oswald';">Cliente</label>
+                <input type="text" name="cliente" id="cliente_q" class="form-control" placeholder="Usuario, Correo, Nombre..." value="{{ cliente }}" style="border-radius: 8px; border: 1px solid var(--svcn-caramel);">
+            </div>
+            
+            <div class="col-md-2">
+                <label for="estado_q" class="form-label fw-bold small text-uppercase mb-1" style="color: var(--svcn-espresso); font-family: 'Oswald';">Estado</label>
+                <select name="estado" id="estado_q" class="form-select" style="border-radius: 8px; border: 1px solid var(--svcn-caramel);">
+                    <option value="">Todos</option>
+                    {% for key, val in estados_pedido %}
+                        <option value="{{ key }}" {% if estado_actual == key %}selected{% endif %}>{{ val }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="col-md-2">
+                <label for="ciudad_q" class="form-label fw-bold small text-uppercase mb-1" style="color: var(--svcn-espresso); font-family: 'Oswald';">Ciudad Destino</label>
+                <select name="ciudad" id="ciudad_q" class="form-select" style="border-radius: 8px; border: 1px solid var(--svcn-caramel);">
+                    <option value="">Todas</option>
+                    {% for c in ciudades %}
+                        <option value="{{ c.id }}" {% if ciudad_actual == c.id %}selected{% endif %}>{{ c.nombre }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="col-md-2">
+                <label for="f_inicio" class="form-label fw-bold small text-uppercase mb-1" style="color: var(--svcn-espresso); font-family: 'Oswald';">Fecha Inicio</label>
+                <input type="date" name="fecha_inicio" id="f_inicio" class="form-control" value="{{ fecha_inicio }}" style="border-radius: 8px; border: 1px solid var(--svcn-caramel);">
+            </div>
+            
+            <div class="col-md-2">
+                <label for="f_fin" class="form-label fw-bold small text-uppercase mb-1" style="color: var(--svcn-espresso); font-family: 'Oswald';">Fecha Fin</label>
+                <input type="date" name="fecha_fin" id="f_fin" class="form-control" value="{{ fecha_fin }}" style="border-radius: 8px; border: 1px solid var(--svcn-caramel);">
+            </div>
+            
+            <div class="col-md-2">
+                <label class="form-label fw-bold small text-uppercase mb-1" style="color: var(--svcn-espresso); font-family: 'Oswald';">Valor Mínimo</label>
+                <input type="number" name="total_min" class="form-control" placeholder="Mín" value="{{ total_min }}" style="border-radius: 8px; border: 1px solid var(--svcn-caramel);">
+            </div>
+            
+            <div class="col-md-2">
+                <label class="form-label fw-bold small text-uppercase mb-1" style="color: var(--svcn-espresso); font-family: 'Oswald';">Valor Máximo</label>
+                <input type="number" name="total_max" class="form-control" placeholder="Máx" value="{{ total_max }}" style="border-radius: 8px; border: 1px solid var(--svcn-caramel);">
+            </div>
+            
+            <div class="col-md-3 d-flex align-items-end gap-2">
+                <button type="submit" class="btn btn-dark flex-grow-1" style="border-radius: 8px; font-weight: 600; height: 38px;">FILTRAR</button>
+                <a href="{% url 'gestion_pedidos' %}" class="btn btn-outline-secondary" style="border-radius: 8px; height: 38px; display: inline-flex; align-items: center; justify-content: center; border-color: var(--svcn-caramel); color: var(--svcn-caramel);">Limpiar</a>
+            </div>
+        </form>
+        <hr style="border-color: rgba(76, 43, 8, 0.15);">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+            <span class="small text-muted">Se encontraron {{ pedidos|length }} pedidos</span>
+            <div class="d-flex gap-2">
+                <a href="{% url 'reporte_pdf' %}?cliente={{ cliente }}&estado={{ estado_actual }}&ciudad={{ ciudad_actual|default:'' }}&fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}&total_min={{ total_min }}&total_max={{ total_max }}" 
+                   class="btn btn-sm btn-outline-danger" style="border-radius: 6px; font-weight: 600;">
+                    📄 Exportar PDF
+                </a>
+                <a href="{% url 'reporte_csv' %}?cliente={{ cliente }}&estado={{ estado_actual }}&ciudad={{ ciudad_actual|default:'' }}&fecha_inicio={{ fecha_inicio }}&fecha_fin={{ fecha_fin }}&total_min={{ total_min }}&total_max={{ total_max }}" 
+                   class="btn btn-sm btn-outline-success" style="border-radius: 6px; font-weight: 600;">
+                    📊 Exportar CSV
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm" style="border-radius: 15px; overflow: hidden;">
+        <table class="table table-hover align-middle mb-0">
+            <thead class="table-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Destino</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for p in pedidos %}
+                <tr>
+                    <td><strong>#{{ p.id }}</strong></td>
+                    <td>{{ p.usuario.username }}</td>
+                    <td>
+                        <div class="small fw-bold">{{ p.ciudad.nombre }}</div>
+                        <div class="small text-muted">{{ p.direccion_exacta }}</div>
+                    </td>
+                    <td class="fw-bold text-success">${{ p.total|intcomma }}</td>
+                    <td>
+                        <span class="badge 
+                            {% if p.estado == 'PEN' %}bg-secondary
+                            {% elif p.estado == 'PRE' %}bg-info
+                            {% elif p.estado == 'ENV' %}bg-primary
+                            {% elif p.estado == 'ENT' %}bg-success
+                            {% else %}bg-danger{% endif %}">
+                            {{ p.get_estado_display }}
+                        </span>
+                    </td>
+                    <td class="text-center">
+                        <div class="btn-group">
+                            <a href="{% url 'cambiar_estado' p.id 'PRE' %}" class="btn btn-sm btn-outline-info" title="Preparar">📦</a>
+                            <a href="{% url 'cambiar_estado' p.id 'ENV' %}" class="btn btn-sm btn-outline-primary" title="Enviar">🚚</a>
+                            <a href="{% url 'cambiar_estado' p.id 'ENT' %}" class="btn btn-sm btn-outline-success" title="Entregar">✅</a>
+                        </div>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="text-center py-4 text-muted">No hay pedidos registrados aún.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

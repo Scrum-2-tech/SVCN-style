@@ -1,0 +1,286 @@
+/* ==========================================================================
+   VARIABLES DE COLOR - SVCN STYLE (ESTILO PREMIUM REDEFINIDO)
+   ========================================================================== */
+:root {
+    --svcn-espresso: #1F1105;   /* Café oscuro profundo, casi negro */
+    --svcn-caramel: #C59B6D;    /* Dorado caramelizado premium */
+    --svcn-almond: #D0B49F;     /* Almendra suave */
+    --svcn-vanilla: #FAF6F0;    /* Crema vainilla muy claro para fondos de tarjetas */
+    --svcn-coffee: #6A3A13;     /* Café clásico */
+
+    /* Colores funcionales */
+    --svcn-text-dark: #1F1105;
+    --svcn-text-light: #FAF6F0;
+    --svcn-bg-light: #FCFAF7;   /* Fondo general de la página, muy suave y limpio */
+    --svcn-bg-dark: #1F1105;
+    --svcn-shadow: rgba(31, 17, 5, 0.07);
+}
+
+/* ==========================================================================
+   ESTILOS GENERALES
+   ========================================================================== */
+body {
+    font-family: 'Montserrat', sans-serif;
+    color: var(--svcn-text-dark);
+    background-color: var(--svcn-bg-light);
+    margin: 0;
+    line-height: 1.6;
+    overflow-x: hidden;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: 'Oswald', sans-serif;
+    color: var(--svcn-espresso);
+    font-weight: 700;
+}
+
+/* ==========================================================================
+   BOTONES
+   ========================================================================== */
+.button {
+    display: inline-block;
+    padding: 0.8rem 2rem;
+    border-radius: 5px;
+    font-weight: 700;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    text-align: center;
+}
+
+.primary-button {
+    background-color: var(--svcn-caramel);
+    color: var(--svcn-text-light) !important;
+    border: none;
+}
+
+.primary-button:hover {
+    background-color: var(--svcn-coffee);
+    transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   HEADER / NAV
+   ========================================================================== */
+.header {
+    background-color: var(--svcn-espresso);
+    padding: 1rem 0;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-family: 'Oswald', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--svcn-vanilla);
+    letter-spacing: 1px;
+}
+
+.logo-img {
+    height: 40px;
+    width: auto;
+    margin-right: 12px;
+}
+
+.logo-text-style {
+    color: var(--svcn-caramel);
+}
+
+.nav-menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    align-items: center;
+}
+
+.nav-menu li {
+    margin-left: 2rem;
+}
+
+.nav-menu .nav-link {
+    color: var(--svcn-vanilla);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-menu .nav-link:hover {
+    color: var(--svcn-caramel);
+}
+
+.nav-icon {
+    font-size: 1.2rem;
+    opacity: 0.9;
+}
+
+/* ==========================================================================
+   HERO SECTION (AJUSTADA)
+   ========================================================================== */
+.hero-section {
+    background-color: var(--svcn-almond);
+    padding: 4rem 0; /* Un poco menos de padding para que no ocupe tanto verticalmente */
+}
+
+.hero-content {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 3rem;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-text {
+    flex: 1;
+    min-width: 300px;
+}
+
+.hero-text h1 {
+    font-size: 3rem; /* Tamaño más manejable */
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    line-height: 1.1;
+}
+
+.hero-subtitle {
+    font-size: 1.1rem;
+    color: var(--svcn-coffee);
+    margin-bottom: 2rem;
+}
+
+.hero-image {
+    max-width: 100%;
+    max-height: 450px; /* <--- Limita el tamaño de la imagen principal */
+    border-radius: 15px;
+    box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+    object-fit: cover;
+}
+
+/* ==========================================================================
+   PRODUCT GRID (LIMPIO SIN BOTONES)
+   ========================================================================== */
+.section-title {
+    font-size: 2.5rem;
+    text-align: center;
+    margin: 3rem 0 2rem;
+    text-transform: uppercase;
+}
+
+.product-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    padding-bottom: 5rem;
+}
+
+.product-card {
+    background-color: var(--svcn-vanilla);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(76, 43, 8, 0.1);
+    display: flex;
+    flex-direction: column;
+}
+
+.product-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 35px rgba(0,0,0,0.12);
+}
+
+.product-card-img {
+    width: 100%;
+    height: 350px; /* Altura ideal para mostrar el corte de la ropa */
+    object-fit: cover;
+}
+
+.product-card-body {
+    padding: 1.5rem;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.product-card-title {
+    font-size: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.product-card-text {
+    font-size: 0.9rem;
+    color: var(--svcn-coffee);
+    margin-bottom: 1rem;
+}
+
+.product-price {
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--svcn-espresso);
+    margin-top: auto; /* Alinea el precio al fondo siempre */
+}
+
+/* ==========================================================================
+   FOOTER (ESTILO ORIGINAL)
+   ========================================================================== */
+.footer {
+    background-color: var(--svcn-bg-dark);
+    color: var(--svcn-text-light);
+    padding: 3rem 0;
+}
+
+.footer-title {
+    color: var(--svcn-caramel);
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    font-size: 1.5rem;
+}
+
+.footer p {
+    margin-bottom: 0.5rem;
+}
+
+/* Corrección de dropdowns para evitar que se vean sin click */
+.dropdown-menu {
+    display: none; 
+    border: 1px solid var(--svcn-caramel);
+    background-color: var(--svcn-text-light);
+}
+
+.dropdown-menu.show {
+    display: block;
+}
+
+/* Estilo para el input de cantidad */
+.form-control-sm {
+    text-align: center;
+    font-weight: 700;
+    font-family: 'Oswald', sans-serif;
+}
+
+/* Evitar que el botón de añadir se vea gigante en móvil */
+@media (max-width: 768px) {
+    .nav-menu ul {
+        gap: 10px;
+    }
+    .nav-menu li {
+        margin-left: 0.5rem;
+    }
+}

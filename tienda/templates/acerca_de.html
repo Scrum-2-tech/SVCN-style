@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="text-center mb-5">
+        <h2 style="font-family: 'Oswald'; color: var(--svcn-espresso); letter-spacing: 3px;">NUESTRA ESENCIA</h2>
+        <p class="lead mt-3" style="max-width: 800px; margin: 0 auto; color: #5d4037;">
+            "Elevando el concepto Oversized al siguiente nivel. Tu estilo, tu esencia, redefinidos." 
+            En <strong>SVCN Style</strong>, no solo creamos ropa; construimos una identidad urbana basada en la comodidad y la exclusividad.
+        </p>
+    </div>
+
+    <hr style="border-color: var(--svcn-caramel); opacity: 0.2;">
+
+    <h3 class="text-center my-5" style="font-family: 'Oswald'; color: var(--svcn-espresso);">EL EQUIPO DETRÁS DE LA MARCA</h3>
+    
+    <div class="row g-4 justify-content-center">
+        
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm text-center p-4" style="background-color: var(--svcn-vanilla); border-radius: 20px;">
+                <div class="mx-auto mb-3" style="width: 100px; height: 100px; background-color: var(--svcn-espresso); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                    NE
+                </div>
+                <h5 style="font-weight: 800; color: var(--svcn-espresso);">Nicolás Esteban Florez Pardo</h5>
+                <p class="badge bg-dark mb-3">Lead Software Developer</p>
+                <p class="small text-muted">Arquitecto de código y responsable del desarrollo técnico de la plataforma SVCN Style. Especialista en convertir ideas en experiencias digitales fluidas.</p>
+                <div style="font-size: 0.85rem; color: var(--svcn-caramel);">
+                    <p class="mb-1"><strong>Correo:</strong> n.florez@svcnstyle.com</p>
+                    <p><strong>Tel:</strong> +57 310 123 4567</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm text-center p-4" style="background-color: var(--svcn-vanilla); border-radius: 20px;">
+                <div class="mx-auto mb-3" style="width: 100px; height: 100px; background-color: var(--svcn-caramel); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                    IS
+                </div>
+                <h5 style="font-weight: 800; color: var(--svcn-espresso);">Ivan Samuel Ruiz Rubiano</h5>
+                <p class="badge bg-secondary mb-3">Product Owner</p>
+                <p class="small text-muted">Visionario estratégico encargado de definir las prioridades del producto y asegurar que cada prenda refleje la calidad que nuestros clientes merecen.</p>
+                <div style="font-size: 0.85rem; color: var(--svcn-caramel);">
+                    <p class="mb-1"><strong>Correo:</strong> i.ruiz@svcnstyle.com</p>
+                    <p><strong>Tel:</strong> +57 321 987 6543</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm text-center p-4" style="background-color: var(--svcn-vanilla); border-radius: 20px;">
+                <div class="mx-auto mb-3" style="width: 100px; height: 100px; background-color: #8d6e63; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 2rem;">
+                    AC
+                </div>
+                <h5 style="font-weight: 800; color: var(--svcn-espresso);">Andrea Catalina Serna Espitia</h5>
+                <p class="badge bg-info text-dark mb-3">Scrum Master</p>
+                <p class="small text-muted">Facilitadora de procesos y experta en agilidad. Su misión es optimizar el flujo de trabajo para garantizar entregas excepcionales en cada temporada.</p>
+                <div style="font-size: 0.85rem; color: var(--svcn-caramel);">
+                    <p class="mb-1"><strong>Correo:</strong> a.serna@svcnstyle.com</p>
+                    <p><strong>Tel:</strong> +57 315 456 7890</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow" style="border-radius: 15px;">
+                <div class="card-header bg-dark text-white" style="border-radius: 15px 15px 0 0;">
+                    <h4 class="mb-0">Editar Prenda: {{ producto.nombre }}</h4>
+                </div>
+                <div class="card-body p-4">
+                    <form method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        <div class="row g-3">
+                            {% for field in form %}
+                            <div class="col-md-6 mb-2">
+                                <label class="form-label fw-bold small text-uppercase">{{ field.label }}</label>
+                                {{ field }}
+                                {% if field.errors %}
+                                    <div class="text-danger small">{{ field.errors }}</div>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        </div>
+                        <div class="mt-4 d-flex justify-content-between">
+                            <a href="{% url 'mantenimiento' %}" class="btn btn-secondary px-4">Cancelar</a>
+                            <button type="submit" class="btn btn-success px-4">Guardar Cambios</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

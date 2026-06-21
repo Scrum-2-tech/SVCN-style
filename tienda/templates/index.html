@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %} 
+
+{% block content %}
+<section class="hero-section">
+    <div class="container hero-content">
+        <div class="hero-text text-center text-md-start">
+            <h1>Tu Estilo.<br>Tu Esencia.</h1>
+            <p class="hero-subtitle">Explora nuestra colección de moda oversized que redefine la comodidad.</p>
+            <a href="#productos" class="button primary-button">Explorar Colección</a>
+        </div>
+        <div class="hero-image-container">
+            <img src="{% static 'img/SVCN-Style-2.jpeg' %}" alt="Modelo SVCN" class="hero-image image-hero-fitted">
+        </div>
+    </div>
+</section>
+
+<section id="productos" class="featured-products-section">
+    <div class="container">
+        <h2 class="section-title">Nuestros Favoritos</h2>
+        <div class="product-grid">
+            {% for p in productos %}
+            <div class="product-card">
+                {% if p.imagen %}
+                    <img src="{{ p.imagen.url }}" alt="{{ p.nombre }}" class="product-card-img">
+                {% endif %}
+                <div class="product-card-body">
+                    <h5 class="product-card-title">{{ p.nombre }}</h5>
+                    <p class="product-card-text text-truncate">{{ p.descripcion }}</p>
+                    
+                    <div class="d-flex justify-content-between align-items-center mt-3">
+                        <span class="product-price">${{ p.precio|floatformat:0|intcomma }}</span>
+                        
+                        <form action="{% url 'add' p.id %}" method="get" class="d-flex align-items-center gap-1">
+                            <input type="number" name="cantidad" value="1" min="1" class="form-control form-control-sm shadow-none" style="width: 50px; border-color: var(--svcn-caramel);">
+                            <button type="submit" class="button primary-button" style="padding: 6px 10px; font-size: 0.75rem;">
+                                Añadir
+                            </button>
+                        </form>
+                    </div>
+                    
+                    <div class="mt-2 text-end">
+                        <small class="text-muted">{{ p.get_talla_display }}</small>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+                <p class="text-center w-100">Estamos preparando la nueva colección...</p>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container my-5" style="max-width: 700px;">
+    <div class="card shadow-sm border-0 p-4" style="background-color: var(--svcn-vanilla); border-radius: 15px;">
+        
+        <div class="alert {% if pedido.estado == 'ENT' %}alert-success{% elif pedido.estado == 'CAN' %}alert-danger{% else %}alert-info{% endif %} text-center mb-4" style="border-radius: 10px; border: none;">
+            <h5 class="mb-1 fw-bold">Estado: {{ pedido.get_estado_display }}</h5>
+            <small>Tu pedido está siendo procesado por nuestro equipo logístico.</small>
+        </div>
+
+        <div class="text-center mb-4">
+            <h3 style="font-family: 'Oswald'; color: var(--svcn-espresso);">RECIBO DE COMPRA #{{ pedido.id }}</h3>
+            <p class="text-muted small mb-1">Fecha: {{ pedido.fecha_pedido|date:"d/m/Y H:i" }}</p>
+            <p class="small"><strong>Destino:</strong> {{ pedido.direccion_exacta }}, {{ pedido.ciudad.nombre }}</p>
+        </div>
+
+        <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr style="border-bottom: 2px solid var(--svcn-caramel);">
+                        <th>Producto</th>
+                        <th class="text-center">Cant.</th>
+                        <th class="text-end">Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in detalles %}
+                    <tr>
+                        <td>{{ item.producto.nombre }}</td>
+                        <td class="text-center">{{ item.cantidad }}</td>
+                        <td class="text-end">${{ item.producto.precio|intcomma }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <th colspan="2" class="text-end pt-3">TOTAL PAGADO:</th>
+                        <th class="text-end pt-3" style="color: var(--svcn-caramel); font-size: 1.2rem;">
+                            ${{ pedido.total|intcomma }}
+                        </th>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="text-center mt-4 d-flex justify-content-center gap-2">
+            <a href="{% url 'mis_pedidos' %}" class="btn btn-dark" style="border-radius: 8px;">Volver a mis pedidos</a>
+            <button onclick="window.print();" class="btn btn-outline-secondary" style="border-radius: 8px;">
+                <i class="bi bi-printer"></i> Imprimir
+            </button>
+        </div>
+    </div>
+</div>
+{% endblock %}

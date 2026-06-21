@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card shadow border-0 p-4 rounded-3">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-uppercase tracking-wide text-dark mb-1">SVCN STYLE</h2>
+                    <p class="text-muted small text-uppercase">Iniciar Sesión / Panel de Control</p>
+                </div>
+
+                {% if messages %}
+                    <div class="row">
+                        <div class="col-12">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show small py-2" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <form action="{% url 'login' %}" method="POST">
+                    {% csrf_token %}
+                    
+                    <div class="mb-3">
+                        <label for="username" class="form-label fw-semibold text-secondary small text-uppercase">Nombre de Usuario</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-person">👤</i></span>
+                            <input type="text" name="username" id="username" class="form-control border-start-0 ps-0" placeholder="Ingresa tu usuario" required autofocus>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label for="password" class="form-label fw-semibold text-secondary small text-uppercase">Contraseña</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-white border-end-0 text-muted"><i class="bi bi-lock">🔒</i></span>
+                            <input type="password" name="password" id="password" class="form-control border-start-0 ps-0" placeholder="Ingresa tu contraseña" required>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark w-100 py-2.5 text-uppercase fw-bold shadow-sm rounded-2 tracking-wider">
+                        Ingresar al Sistema
+                    </button>
+                </form>
+
+                <div class="text-center mt-4 pt-2 border-top">
+                    <p class="text-muted small mb-0">
+                        ¿No tienes una cuenta aún? 
+                        <a href="{% url 'register' %}" class="text-dark fw-bold text-decoration-none border-bottom border-dark pb-0.5 ms-1">
+                            Regístrate aquí
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

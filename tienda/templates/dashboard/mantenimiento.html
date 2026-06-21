@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="mb-4" style="font-family: 'Oswald'; color: #3d2b1f; letter-spacing: 1px;">MANTENIMIENTO DEL SISTEMA - SVCN STYLE</h2>
+    
+    <div class="row g-4 mb-4">
+        <!-- Botones de Control Rápido -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 15px;">
+                <h5 class="fw-bold mb-3" style="font-family: 'Oswald'; color: var(--svcn-espresso);">🛠️ Acciones de Control</h5>
+                <div class="d-flex flex-wrap gap-2">
+                    <a href="{% url 'catalogo_externo' %}" class="btn btn-outline-info flex-grow-1" style="border-radius: 8px;">
+                        🔍 Catálogo Externo (JSON Local)
+                    </a>
+                    <a href="{% url 'reporte_pdf' %}" class="btn btn-danger flex-grow-1" style="border-radius: 8px;">
+                        📄 Reporte Ventas PDF
+                    </a>
+                    <a href="{% url 'reporte_csv' %}" class="btn btn-success flex-grow-1" style="border-radius: 8px;">
+                        📊 Reporte Ventas CSV
+                    </a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Carga Masiva JSON -->
+        <div class="col-md-6">
+            <div class="card border-0 shadow-sm p-4 h-100" style="border-radius: 15px; background-color: var(--svcn-vanilla); border: 1px solid rgba(76, 43, 8, 0.1);">
+                <h5 class="fw-bold mb-2" style="font-family: 'Oswald'; color: var(--svcn-espresso);">📥 Carga Masiva de Prendas</h5>
+                <p class="small text-muted mb-3">Sube una lista de productos en formato JSON. Descarga la plantilla para ver la estructura esperada.</p>
+                <form action="{% url 'importar_api' %}" method="POST" enctype="multipart/form-data" class="d-flex gap-2">
+                    {% csrf_token %}
+                    <input type="file" name="archivo_json" class="form-control form-control-sm" accept=".json" required style="border-radius: 8px; border: 1px solid var(--svcn-caramel);">
+                    <button type="submit" class="btn btn-dark btn-sm fw-bold" style="border-radius: 8px; white-space: nowrap;">Importar</button>
+                    <a href="{% url 'descargar_plantilla_json' %}" class="btn btn-outline-dark btn-sm fw-bold" style="border-radius: 8px;" title="Descargar Plantilla">📄 Plantilla</a>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <ul class="nav nav-tabs mb-0" id="adminTabs" role="tablist">
+        <li class="nav-item">
+            <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-productos">Productos</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-logistica">Ciudades y Marcas</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-variaciones">Tallas y Colores</button>
+        </li>
+        <li class="nav-item">
+            <button class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-categorias">Categorías</button>
+        </li>
+    </ul>
+
+    <div class="tab-content border p-4 bg-white shadow-sm" style="border-radius: 0 0 15px 15px;">
+        
+        <div class="tab-pane fade show active" id="tab-productos">
+            <div class="d-flex justify-content-between mb-3 align-items-center">
+                <h5 class="mb-0">Inventario Total</h5>
+                <button type="button" class="btn btn-success btn-sm" data-bs-toggle="modal" data-bs-target="#modalProducto">
+                    + Registrar Nueva Prenda
+                </button>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-hover align-middle" style="font-size: 0.9rem;">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Marca</th>
+                            <th>Color / Talla</th>
+                            <th>Precio</th>
+                            <th>Stock</th>
+                            <th class="text-center">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in productos %}
+                        <tr>
+                            <td class="fw-bold">{{ p.nombre }}</td>
+                            <td><span class="text-muted">{{ p.marca.nombre|default:"Genérico" }}</span></td>
+                            <td>
+                                <span class="badge bg-light text-dark border">{{ p.color.nombre }}</span>
+                                <span class="badge bg-dark">{{ p.talla.nombre }}</span>
+                            </td>
+                            <td>${{ p.precio|intcomma }}</td>
+                            <td>
+                                <span class="badge {% if p.stock < 5 %}bg-danger{% else %}bg-secondary{% endif %}">
+                                    {{ p.stock }} und
+                                </span>
+                            </td>
+                            <td class="text-center">
+                                <a href="{% url 'editar_producto' p.id %}" class="btn btn-primary btn-sm">✏️</a>
+                                <a href="{% url 'eliminar_producto_admin' p.id %}" class="btn btn-danger btn-sm" onclick="return confirm('¿Eliminar este producto?')">🗑️</a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tab-logistica">
+            <div class="row">
+                <div class="col-md-6 border-end">
+                    <h6 class="fw-bold mb-3">Ciudades de Envío</h6>
+                    <form action="{% url 'agregar_ciudad' %}" method="POST" class="d-flex gap-2 mb-3">
+                        {% csrf_token %}
+                        <input type="text" name="nombre" class="form-control form-control-sm" placeholder="Ciudad" required>
+                        <input type="text" name="departamento" class="form-control form-control-sm" placeholder="Depto" required>
+                        <button type="submit" class="btn btn-dark btn-sm">Añadir</button>
+                    </form>
+                    <ul class="list-group list-group-flush">
+                        {% for ciudad in ciudades %}
+                        <li class="list-group-item d-flex justify-content-between small">
+                            {{ ciudad.nombre }} ({{ ciudad.departamento }})
+                            <a href="{% url 'eliminar_ciudad' ciudad.id %}" class="text-danger">✖</a>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold mb-3">Marcas / Proveedores</h6>
+                    <form action="{% url 'agregar_marca' %}" method="POST" class="d-flex gap-2 mb-3">
+                        {% csrf_token %}
+                        <input type="text" name="nombre" class="form-control form-control-sm" placeholder="Nombre Marca" required>
+                        <button type="submit" class="btn btn-dark btn-sm">Añadir</button>
+                    </form>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for m in marcas %}
+                        <span class="badge border text-dark p-2 bg-light">
+                            {{ m.nombre }} 
+                            <a href="{% url 'eliminar_marca' m.id %}" class="text-danger ms-1" style="text-decoration:none;">×</a>
+                        </span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tab-variaciones">
+            <div class="row">
+                <div class="col-md-6 border-end">
+                    <h6 class="fw-bold mb-3">Paleta de Colores</h6>
+                    <form action="{% url 'agregar_color' %}" method="POST" class="d-flex gap-2 mb-3">
+                        {% csrf_token %}
+                        <input type="text" name="nombre" class="form-control form-control-sm" placeholder="Ej: Beige" required>
+                        <input type="color" name="codigo_hex" class="form-control form-control-color form-control-sm" value="#3d2b1f">
+                        <button type="submit" class="btn btn-dark btn-sm">Añadir</button>
+                    </form>
+                    <div class="list-group">
+                        {% for c in colores %}
+                        <div class="list-group-item d-flex justify-content-between align-items-center small">
+                            <span><i class="bi bi-circle-fill" style="color: {{ c.codigo_hex }};"></i> {{ c.nombre }}</span>
+                            <a href="{% url 'eliminar_color' c.id %}" class="btn btn-link btn-sm text-danger p-0">Eliminar</a>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <h6 class="fw-bold mb-3">Tallas Disponibles</h6>
+                    <form action="{% url 'agregar_talla' %}" method="POST" class="d-flex gap-2 mb-3">
+                        {% csrf_token %}
+                        <input type="text" name="nombre" class="form-control form-control-sm" placeholder="Ej: Oversized L" required>
+                        <button type="submit" class="btn btn-dark btn-sm">Añadir</button>
+                    </form>
+                    {% for t in tallas %}
+                    <span class="badge bg-dark p-2 mb-1">
+                        {{ t.nombre }} <a href="{% url 'eliminar_talla' t.id %}" class="text-white ms-1">×</a>
+                    </span>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-pane fade" id="tab-categorias">
+            <h6 class="fw-bold mb-3">Secciones de la Tienda</h6>
+            <form action="{% url 'agregar_categoria' %}" method="POST" class="d-flex gap-2 mb-4" style="max-width: 400px;">
+                {% csrf_token %}
+                <input type="text" name="nombre" class="form-control form-control-sm" placeholder="Nueva Categoría" required>
+                <button type="submit" class="btn btn-dark btn-sm">Guardar</button>
+            </form>
+            <div class="row">
+                {% for cat in categorias %}
+                <div class="col-md-3 mb-2">
+                    <div class="p-2 border rounded d-flex justify-content-between align-items-center bg-light small">
+                        <span>{{ cat.nombre|upper }}</span>
+                        <a href="{% url 'eliminar_categoria' cat.id %}" class="text-danger" style="text-decoration:none;">🗑️</a>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="modalProducto" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content" style="border-radius: 15px;">
+            <div class="modal-header bg-dark text-white" style="border-radius: 15px 15px 0 0;">
+                <h5 class="modal-title">Subir Prenda al Sistema</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form action="{% url 'agregar_producto_admin' %}" method="POST" enctype="multipart/form-data">
+                <div class="modal-body">
+                    {% csrf_token %}
+                    <div class="row g-3">
+                        {% for field in form_producto %}
+                        <div class="col-md-6">
+                            <label class="form-label fw-bold small text-uppercase">{{ field.label }}</label>
+                            {{ field }}
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+                <div class="modal-footer bg-light" style="border-radius: 0 0 15px 15px;">
+                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-success btn-sm px-4">Guardar en Inventario</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

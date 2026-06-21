@@ -1,0 +1,86 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-7 col-lg-6">
+            <div class="card shadow border-0 p-4 rounded-3">
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold text-uppercase tracking-wide text-dark mb-1">SVCN STYLE</h2>
+                    <p class="text-muted small text-uppercase">Crear una Cuenta Nueva (Registro Seguro)</p>
+                </div>
+
+                {% if messages %}
+                    <div class="row">
+                        <div class="col-12">
+                            {% for message in messages %}
+                                <div class="alert alert-{{ message.tags }} alert-dismissible fade show small py-2" role="alert">
+                                    {{ message }}
+                                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                {% endif %}
+
+                <form action="{% url 'register' %}" method="POST" class="needs-validation" novalidate>
+                    {% csrf_token %}
+                    
+                    {% for field in form %}
+                        <div class="mb-3">
+                            <label for="{{ field.id_for_label }}" class="form-label fw-semibold text-secondary small text-uppercase">
+                                {{ field.label }}
+                            </label>
+                            
+                            <div class="input-group">
+                                {% if field.name == 'username' %}
+                                    <span class="input-group-text bg-white text-muted">@</span>
+                                {% elif field.name == 'email' %}
+                                    <span class="input-group-text bg-white text-muted">✉️</span>
+                                {% else %}
+                                    <span class="input-group-text bg-white text-muted">✏️</span>
+                                {% endif %}
+                                
+                                <input type="{{ field.field.widget.input_type|default:'text' }}" 
+                                       name="{{ field.name }}" 
+                                       id="{{ field.id_for_label }}" 
+                                       class="form-control {% if field.errors %}is-invalid{% endif %}" 
+                                       placeholder="Ingresa {{ field.label|lower }}"
+                                       {% if field.field.required %}required{% endif %}>
+                            </div>
+
+                            {% if field.errors %}
+                                {% for error in field.errors %}
+                                    <div class="text-danger small mt-1">
+                                        {{ error }}
+                                    </div>
+                                {% endfor %}
+                            {% endif %}
+                            
+                            {% if field.help_text %}
+                                <div class="form-text text-muted signup-help-text" style="font-size: 0.75rem;">
+                                    {{ field.help_text|safe }}
+                                </div>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+
+                    <button type="submit" class="btn btn-dark w-100 py-2.5 text-uppercase fw-bold shadow-sm rounded-2 tracking-wider mt-3">
+                        Registrar Cuenta
+                    </button>
+                </form>
+
+                <div class="text-center mt-4 pt-2 border-top">
+                    <p class="text-muted small mb-0">
+                        ¿Ya tienes una cuenta registrada? 
+                        <a href="{% url 'login' %}" class="text-dark fw-bold text-decoration-none border-bottom border-dark pb-0.5 ms-1">
+                            Inicia sesión aquí
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
