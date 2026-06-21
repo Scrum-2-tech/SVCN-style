@@ -8,6 +8,7 @@ urlpatterns = [
     path('', include('tienda.urls')),
 ]
 
+# Servir media siempre
 urlpatterns += static(
     settings.MEDIA_URL,
     document_root=settings.MEDIA_ROOT
